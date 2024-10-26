@@ -7,8 +7,9 @@ class Person{
     private:
         std::string name;
     public:
-        Person();
+        Person(std::string name);
         ~Person();
+        std::string getName();
 };
 
 #endif

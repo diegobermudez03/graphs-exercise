@@ -13,7 +13,8 @@ class SocialNetwork{
     public:
         SocialNetwork();
         ~SocialNetwork();
-        void addPerson(std::string& name);
+        void addRelation(std::string& person1, std::string person2);
+        void print();
 };
 
 #endif
