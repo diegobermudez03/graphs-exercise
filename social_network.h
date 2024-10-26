@@ -10,11 +10,13 @@ class SocialNetwork{
     private:
         std::vector<Person*> persons;   //nodes
         std::vector<std::unordered_set<int>*> relations; //lines
+
+        std::string recursiveDFS(int i, std::unordered_set<int>& visited, std::string previous_string);
     public:
         SocialNetwork();
         ~SocialNetwork();
         void addRelation(std::string& person1, std::string person2);
-        void print();
+        std::string visitWithDFS();
 };
 
 #endif

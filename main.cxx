@@ -3,10 +3,12 @@
 
 #include "social_network.h"
 
+SocialNetwork* readFile(std::string file_name);
+
 int main(int argc, char **argsv){
     SocialNetwork* social_network = readFile("files/in01.txt"); 
-    social_network->print();
-
+    std::cout << social_network->visitWithDFS();
+    delete social_network;
 }
 
 

@@ -1,5 +1,7 @@
 #include "social_network.h"
 
+#include <unordered_set>
+
 SocialNetwork::SocialNetwork(){
 }
 
@@ -28,10 +30,12 @@ void SocialNetwork::addRelation(std::string& person1, std::string person2){
     //if any of them two dont exist, then create them
     if(index_person1 == -1){
         this->persons.push_back(new Person(person1));
+        this->relations.push_back(new std::unordered_set<int>);
         index_person1 = this->persons.size()-1;
     }
     if(index_person2 == -1){
         this->persons.push_back(new Person(person2));
+        this->relations.push_back(new std::unordered_set<int>);
         index_person2= this->persons.size()-1;
     }
 
@@ -39,6 +43,26 @@ void SocialNetwork::addRelation(std::string& person1, std::string person2){
     this->relations[index_person1]->insert(index_person2);
 }
 
-void SocialNetwork::print(){
+std::string SocialNetwork::visitWithDFS(){
+    if(this->persons.empty()) return "";
 
+    std::unordered_set<int> visited;
+    return recursiveDFS(0, visited, "");
+}
+
+std::string SocialNetwork::recursiveDFS(int i, std::unordered_set<int>& visited, std::string previous_string){
+    //printing us stating that they are visiting us
+    std::string returning = previous_string + "\n" + this->persons[i]->getName();
+    visited.insert(i);
+    
+    //visit our sons and recurisve call
+    std::unordered_set<int>::iterator it = this->relations[i]->begin();
+    for(; it != this->relations[i]->end(); ++it){
+        //this condition means, if this son is not visited already
+        if(visited.find(*it) == visited.end()){
+            returning = recursiveDFS(*it, visited, returning);
+        }
+    }
+
+    return returning;
 }
