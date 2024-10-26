@@ -1,6 +1,8 @@
 #include "social_network.h"
 
 #include <unordered_set>
+#include <queue>
+#include "tuple_2.h"
 
 SocialNetwork::SocialNetwork(){
 }
@@ -65,4 +67,41 @@ std::string SocialNetwork::recursiveDFS(int i, std::unordered_set<int>& visited,
     }
 
     return returning;
+}
+
+int SocialNetwork::checkGradeDistance(std::string& from, std::string& to){
+    int from_index = this->getIndexOf(from);
+    int to_index = this->getIndexOf(to);
+
+    if(from_index == -1 || to_index == -1) return -1;   //which means, one of the persons ot both of them dont exist
+
+    std::queue<Tuple2<int,int>> bfs_queue;      //where the tuples are <level of distance, index of the person>
+    bfs_queue.push(Tuple2<int, int>(0,from_index)); //we add the first item with distance of 0, the from person itself
+
+    while(!bfs_queue.empty()){
+        Tuple2<int, int> current_person = bfs_queue.front();
+        bfs_queue.pop();
+        int neighbors_distance = current_person.getValue1() + 1;    //the distance of this neighbors is the distance of the previous + 1
+        if(neighbors_distance == 7) break; //if we reached distance 7, then we break, it doesn't fullfills the check
+        
+        std::unordered_set<int>* neighbors = this->relations[current_person.getValue2()];
+        std::unordered_set<int>::iterator it = neighbors->begin();
+        for(; it != neighbors->end(); ++it){
+            if(*it == to_index){
+                return neighbors_distance;
+            }else{
+                bfs_queue.push(Tuple2(neighbors_distance, *it));
+            }
+        }
+    }
+    //if it reaches here, means that there are no connections less than 6 between those persons
+    return -1;
+}
+
+int SocialNetwork::getIndexOf(std::string& name){
+    std::vector<Person*>::iterator it = this->persons.begin();
+    for(int i = 0; it != this->persons.end(); ++it, i++){
+        if((*it)->getName() == name) return i;
+    }
+    return -1;
 }
