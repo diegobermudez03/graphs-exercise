@@ -12,4 +12,5 @@ class Tuple2{
         V getValue2();
 };
 
+#include "tuple_2.hxx"
 #endif

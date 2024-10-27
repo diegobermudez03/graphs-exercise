@@ -43,6 +43,7 @@ void SocialNetwork::addRelation(std::string& person1, std::string person2){
 
     //at this point we have the indexes for sure, so we can create the relation
     this->relations[index_person1]->insert(index_person2);
+    this->relations[index_person2]->insert(index_person1);
 }
 
 std::string SocialNetwork::visitWithDFS(){
@@ -90,7 +91,7 @@ int SocialNetwork::checkGradeDistance(std::string& from, std::string& to){
             if(*it == to_index){
                 return neighbors_distance;
             }else{
-                bfs_queue.push(Tuple2(neighbors_distance, *it));
+                bfs_queue.push(Tuple2<int, int>(neighbors_distance, *it));
             }
         }
     }
