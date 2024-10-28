@@ -56,7 +56,7 @@ void testFile(std::string file_name, SocialNetwork* socialNetwork){
         if(already_done.find(person1 + person2) != already_done.end()){
             pasos = already_done.find(person1 + person2)->second;
         }else{
-            int pasos = socialNetwork->checkGradeDistance(person1, person2);
+            pasos = socialNetwork->checkGradeDistance(person1, person2);
             already_done[person1 + person2] = pasos;
         }
         
@@ -67,4 +67,6 @@ void testFile(std::string file_name, SocialNetwork* socialNetwork){
             output_file << person1 << " " << person2 << "     No Cumple\n";
         }
     }
+    test_file.close();
+    output_file.close();
 }

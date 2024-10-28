@@ -19,16 +19,9 @@ SocialNetwork::~SocialNetwork(){
 }
 
 void SocialNetwork::addRelation(std::string& person1, std::string person2){
-    int index_person1 = -1;
-    int index_person2 = -1;
+    int index_person1 = getIndexOf(person1);
+    int index_person2 = getIndexOf(person2);
 
-    //get indexes of persons if already exist
-    std::vector<Person*>::iterator it = this->persons.begin();
-    for(int i = 0; it != this->persons.end(); ++it, i++){
-        if((*it)->getName() == person1) index_person1 = i;
-        else if((*it)->getName() == person2) index_person2 = i;
-        if(index_person1 != -1 && index_person2 != -1) break;
-    }
     //if any of them two dont exist, then create them
     if(index_person1 == -1){
         this->persons.push_back(new Person(person1));
@@ -74,24 +67,33 @@ int SocialNetwork::checkGradeDistance(std::string& from, std::string& to){
     int from_index = this->getIndexOf(from);
     int to_index = this->getIndexOf(to);
 
-    if(from_index == -1 || to_index == -1) return -1;   //which means, one of the persons ot both of them dont exist
+    //which means, one of the persons ot both of them dont exist
+    if(from_index == -1 || to_index == -1) return -1; 
 
-    std::queue<Tuple2<int,int>> bfs_queue;      //where the tuples are <level of distance, index of the person>
-    bfs_queue.push(Tuple2<int, int>(0,from_index)); //we add the first item with distance of 0, the from person itself
+    //where the tuples are <level of distance, index of the person>
+    std::queue<Tuple2<int,int>> bfs_queue;     
+    //we add the first item with distance of 0, the from person itself
+    bfs_queue.push(Tuple2<int, int>(0,from_index));
+
+    std::unordered_set<int> visited;
+    visited.insert(from_index);
 
     while(!bfs_queue.empty()){
         Tuple2<int, int> current_person = bfs_queue.front();
         bfs_queue.pop();
-        int neighbors_distance = current_person.getValue1() + 1;    //the distance of this neighbors is the distance of the previous + 1
-        if(neighbors_distance == 7) break; //if we reached distance 7, then we break, it doesn't fullfills the check
+        //the distance of this neighbors is the distance of the previous + 1
+        int neighbors_distance = current_person.getValue1() + 1;   
+        //if we reached distance 7, then we break, it doesn't fullfills the check
+        if(neighbors_distance == 7) break; 
         
         std::unordered_set<int>* neighbors = this->relations[current_person.getValue2()];
         std::unordered_set<int>::iterator it = neighbors->begin();
         for(; it != neighbors->end(); ++it){
             if(*it == to_index){
                 return neighbors_distance;
-            }else{
+            }else if(visited.find(*it) == visited.end()){
                 bfs_queue.push(Tuple2<int, int>(neighbors_distance, *it));
+                visited.insert(*it);
             }
         }
     }
